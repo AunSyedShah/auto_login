@@ -60,3 +60,4 @@ after this you wil see
 (base) your current path
 ````
 now its activated
+
