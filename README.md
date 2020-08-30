@@ -1,7 +1,8 @@
 [![Open Source Love](https://github.com/umair313/auto_login/blob/readme/misc/open-source.svg)](https://github.com/umair313/auto_login/blob/readme/misc)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 ![welcome](https://github.com/umair313/auto_login/blob/readme/misc/welcome.png)
-# AUTO LMS LOGIN 
+
+# AUTO VU LMS LOGIN 
 
 This tool is created for Vitual university students for auto login perpose 
 currently working for chrome brower other browser will be added soon.
