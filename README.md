@@ -1,6 +1,5 @@
 [![Open Source Love](https://github.com/umair313/auto_login/blob/readme/misc/open-source.svg)](https://github.com/umair313/auto_login/blob/readme/misc)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
-
 [<img scr="https://github.com/umair313/auto_login/blob/readme/misc/welcome.png">]
 # AUTO LMS LOGIN 
 
