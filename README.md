@@ -1,6 +1,6 @@
-[![Open Source Love](https://github.com/umair313/auto_login/blob/readme/misc/open-source.svg)](https://github.com/umair313/auto_login/blob/readme/misc)
+[![Open Source Love](https://github.com/umair313/auto_login/blob/master/misc/open-source.svg)](https://github.com/umair313/auto_login/blob/master/misc)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
-![welcome](https://github.com/umair313/auto_login/blob/readme/misc/welcome.png)
+![welcome](https://github.com/umair313/auto_login/blob/master/misc/welcome.png)
 
 # AUTO VU LMS LOGIN 
 
