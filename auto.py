@@ -24,23 +24,21 @@ def logout():
     driver.switch_to.frame(driver.find_element_by_name("header"))
     signOut = driver.find_element_by_id("imgSignOut")
     signOut.click()
+def login(username, password):
+    #driver = webdriver.Chrome("C:\\WebDriver\\bin\\chromedriver.exe")
+    driver = webdriver.Chrome("C:\\WebDriver\\chromedriver.exe")
+    driver.get("https://vulms.vu.edu.pk/LMS_LandingPage.aspx")
 
+    username_textbox = driver.find_element_by_id("txtStudentID")
+    username_textbox.send_keys(username)
 
-#driver = webdriver.Chrome("C:\\WebDriver\\bin\\chromedriver.exe")
-driver = webdriver.Chrome("C:\\WebDriver\\chromedriver.exe")
-driver.get("https://vulms.vu.edu.pk/LMS_LandingPage.aspx")
+    password_textbox = driver.find_element_by_id("txtPassword")
+    password_textbox.send_keys(password)
+    time.sleep(1)
 
-username_textbox = driver.find_element_by_id("txtStudentID")
-username_textbox.send_keys(username)
+    login_button = driver.find_element_by_id("ibtnLogin")
+    login_button.click()
 
-password_textbox = driver.find_element_by_id("txtPassword")
-password_textbox.send_keys(password)
-time.sleep(1)
-
-login_button = driver.find_element_by_id("ibtnLogin")
-login_button.click()
-
-
+login(username, password)
 getSubjects(sub)
-
 logout()
