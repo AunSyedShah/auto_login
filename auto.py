@@ -5,6 +5,10 @@ username = input("Enter Student ID: ")
 password = getpass("Enter your password: ")
 sub = int(input("How many subjects so you have: "))
 
+#driver = webdriver.Chrome("C:\\WebDriver\\bin\\chromedriver.exe")
+driver = webdriver.Chrome("C:\\WebDriver\\chromedriver.exe")
+driver.get("https://vulms.vu.edu.pk/LMS_LandingPage.aspx")
+
 def getSubjects(sub):
     driver.switch_to.default_content()
     driver.switch_to.frame(driver.find_element_by_name("frmContents"))
@@ -25,10 +29,6 @@ def logout():
     signOut = driver.find_element_by_id("imgSignOut")
     signOut.click()
 def login(username, password):
-    #driver = webdriver.Chrome("C:\\WebDriver\\bin\\chromedriver.exe")
-    driver = webdriver.Chrome("C:\\WebDriver\\chromedriver.exe")
-    driver.get("https://vulms.vu.edu.pk/LMS_LandingPage.aspx")
-
     username_textbox = driver.find_element_by_id("txtStudentID")
     username_textbox.send_keys(username)
 
