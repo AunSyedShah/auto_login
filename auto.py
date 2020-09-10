@@ -1,5 +1,6 @@
 from selenium import webdriver
 from getpass import getpass
+from selenium.webdriver.chrome.options import Options
 import sys
 import time
 
@@ -7,10 +8,11 @@ import time
 username = input("Enter Student ID: ")
 password = getpass("Enter your password: ")
 
-
+option = webdriver.ChromeOptions()
+option.add_argument('headless')
 
 #driver = webdriver.Chrome("C:\\WebDriver\\bin\\chromedriver.exe")
-driver = webdriver.Chrome("C:\\WebDriver\\chromedriver.exe")
+driver = webdriver.Chrome("C:\\WebDriver\\chromedriver.exe", options = option)
 driver.get("https://vulms.vu.edu.pk/LMS_LandingPage.aspx")
 
 def getSubjects():
@@ -35,7 +37,6 @@ def getSubjects():
             i += 1
         except:
             break
-
 def logout():
     #logout
     driver.switch_to.default_content()
