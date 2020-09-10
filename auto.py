@@ -1,27 +1,41 @@
 from selenium import webdriver
 from getpass import getpass
+import sys
 import time
+
+# local variables
 username = input("Enter Student ID: ")
 password = getpass("Enter your password: ")
-sub = int(input("How many subjects so you have: "))
+
+
 
 #driver = webdriver.Chrome("C:\\WebDriver\\bin\\chromedriver.exe")
 driver = webdriver.Chrome("C:\\WebDriver\\chromedriver.exe")
 driver.get("https://vulms.vu.edu.pk/LMS_LandingPage.aspx")
 
-def getSubjects(sub):
-    driver.switch_to.default_content()
-    driver.switch_to.frame(driver.find_element_by_name("frmContents"))
-
-    qz = "gvCourseList_lblCourseCode_"
+def getSubjects():
+    try:
+        driver.switch_to.default_content()
+        driver.switch_to.frame(driver.find_element_by_name("frmContents"))
+    except:
+        sys.exit("Wrong Password or System Error")
 
     subjectList = []
+    qz = "gvCourseList_lblCourseCode_"
 
-    for i in range(sub):
+    print("Subjects List\n==========")
+
+    i = 0
+    while(True):
         iString = str(i)
         subjectList.append(qz+iString)
-        elem = driver.find_element_by_id(subjectList[i]).get_attribute("innerHTML")
-        print(elem)
+        try:
+            elem = driver.find_element_by_id(subjectList[i]).get_attribute("innerHTML")
+            print(elem)
+            i += 1
+        except:
+            break
+
 def logout():
     #logout
     driver.switch_to.default_content()
@@ -38,7 +52,27 @@ def login(username, password):
 
     login_button = driver.find_element_by_id("ibtnLogin")
     login_button.click()
+def calculateQuiz():
+    driver.switch_to.default_content()
+    driver.switch_to.frame(driver.find_element_by_name("frmContents"))
+    driver.find_element_by_id("gvCourseList_ibtnQuizzes_1_0").click()
+    print("Quiz Grand Total")
+
+    obtMarks = []
+    obtMarksStr = "gvQuizList_lblGetMarks_"
+    obtMarksString = ""
+    count = 0
+    while(True):
+        obtMarksString = obtMarksStr + str(count)
+        try:
+            findQuiz = driver.find_element_by_id(obtMarksString).get_attribute("innerHTML")
+            obtMarks.append(int(findQuiz))
+            count += 1
+        except:
+            break
+    print(sum(obtMarks))
 
 login(username, password)
-getSubjects(sub)
+getSubjects()
+calculateQuiz()
 logout()
