@@ -1,49 +1,52 @@
 from selenium import webdriver
 from getpass import getpass
 from selenium.webdriver.chrome.options import Options
+from os import system
 import sys
 import time
 
-# local variables
-username = input("Enter Student ID: ")
-password = getpass("Enter your password: ")
+def loadDriver(state = 1):
+    option = webdriver.ChromeOptions()
+    option.add_argument('headless')
 
-option = webdriver.ChromeOptions()
-option.add_argument('headless')
-
-#driver = webdriver.Chrome("C:\\WebDriver\\bin\\chromedriver.exe")
-driver = webdriver.Chrome("C:\\WebDriver\\chromedriver.exe", options = option)
-driver.get("https://vulms.vu.edu.pk/LMS_LandingPage.aspx")
-
-def getSubjects():
+    #driver = webdriver.Chrome("C:\\WebDriver\\bin\\chromedriver.exe")
     try:
-        driver.switch_to.default_content()
-        driver.switch_to.frame(driver.find_element_by_name("frmContents"))
+        if state == 1:
+            driver = webdriver.Chrome("C:\\WebDriver\\chromedriver.exe", options=option)
+        else:
+            driver = webdriver.Chrome("C:\\WebDriver\\chromedriver.exe")
+        return driver
     except:
-        sys.exit("Wrong Password or System Error")
-
+        sys.exit("You don't have chrome Installed")
+def getSubjects(driver):
+    driver.switch_to.default_content()
+    driver.switch_to.frame(driver.find_element_by_name("header"))
+    driver.find_element_by_id("imgLMSHome").click()
+    driver.switch_to.default_content()
+    driver.switch_to.frame(driver.find_element_by_name("frmContents"))
     subjectList = []
-    qz = "gvCourseList_lblCourseCode_"
 
-    print("Subjects List\n==========")
+    qz = "gvCourseList_lblCourseCode_"
 
     i = 0
     while(True):
         iString = str(i)
-        subjectList.append(qz+iString)
         try:
-            elem = driver.find_element_by_id(subjectList[i]).get_attribute("innerHTML")
-            print(elem)
+            subjectList.append(driver.find_element_by_id(qz+iString).get_attribute("innerHTML"))
             i += 1
         except:
             break
-def logout():
+    return subjectList
+def logout(driver):
     #logout
     driver.switch_to.default_content()
     driver.switch_to.frame(driver.find_element_by_name("header"))
     signOut = driver.find_element_by_id("imgSignOut")
     signOut.click()
-def login(username, password):
+    print("Logged Out")
+# returns true if successful login
+def login(username, password, driver):
+
     username_textbox = driver.find_element_by_id("txtStudentID")
     username_textbox.send_keys(username)
 
@@ -53,11 +56,35 @@ def login(username, password):
 
     login_button = driver.find_element_by_id("ibtnLogin")
     login_button.click()
-def calculateQuiz():
+
+    # login status check
+    try:
+        driver.switch_to.default_content()
+        driver.switch_to.frame(driver.find_element_by_name("header"))
+        system("cls")
+        print("\nLogin Successful")
+        return True
+    except:
+        return False
+# returns a string
+def getDetails(driver):
+    details = []
+    driver.switch_to.default_content()
+    driver.switch_to.frame(driver.find_element_by_name("header"))
+    driver.find_element_by_id("imgProfile").click()
+    driver.switch_to.default_content()
+    #list append
+    driver.switch_to.frame(driver.find_element_by_name("frmContents"))
+    details.append(str(driver.find_element_by_id("lblStdName").get_attribute("innerHTML")))
+    details.append(str(driver.find_element_by_id("lblVuEmail").get_attribute("innerHTML")))
+    details.append(str(driver.find_element_by_id("lblStudyPro").get_attribute("innerHTML")))
+    details.append(str(driver.find_element_by_id("lblCurSemester").get_attribute("innerHTML")))
+    return details
+def calculateQuiz(driver):
     driver.switch_to.default_content()
     driver.switch_to.frame(driver.find_element_by_name("frmContents"))
     driver.find_element_by_id("gvCourseList_ibtnQuizzes_1_0").click()
-    print("Quiz Grand Total")
+    print("First Subject Quiz Grand Total")
 
     obtMarks = []
     obtMarksStr = "gvQuizList_lblGetMarks_"
@@ -72,8 +99,89 @@ def calculateQuiz():
         except:
             break
     print(sum(obtMarks))
+def AccountBook(driver):
+    driver.switch_to.default_content()
+    driver.switch_to.frame(driver.find_element_by_name("header"))
+    driver.find_element_by_id("imgAccountBook").click()
+    driver.switch_to.default_content()
+    driver.switch_to.frame(driver.find_element_by_name("frmContents"))
+    fee_due = driver.find_element_by_id("grdaccountbook_lblTotalPayableBalace").get_attribute("innerHTML")
+    return fee_due
+def getQuizPercentage(driver):
+    driver.switch_to.default_content()
+    driver.switch_to.frame(driver.find_element_by_name("frmContents"))
+# returns integer value
+def totalAmountPaid(driver):
+    driver.switch_to.default_content()
+    driver.switch_to.frame(driver.find_element_by_name("header"))
+    driver.find_element_by_id("imgAccountBook").click()
+    driver.switch_to.default_content()
+    driver.switch_to.frame(driver.find_element_by_name("frmContents"))
+    i = 0
+    sum = 0
+    while(True):
+        try:
+            sum += int(driver.find_element_by_id("grdaccountbook_lblPaidAmount_" + str(i)).get_attribute("innerHTML"))
+            i += 1
+        except:
+            break
+    return sum
+def main():
+    # local variables
+    system("cls")
+    print("Console based VULMS\n==========")
+    username = input("Enter Student ID: ")
+    password = getpass("Enter your password: ")
+    url = "https://vulms.vu.edu.pk/LMS_LandingPage.aspx"
 
-login(username, password)
-getSubjects()
-calculateQuiz()
-logout()
+    system("cls")
+
+    print("System is Working, Please Wait\n")
+    # function calls
+    driver = loadDriver()
+    driver.get(url)
+
+    system("cls")
+
+    login_status = login(username, password, driver)
+    if login_status:
+        subjects = getSubjects(driver)
+        fee_due = AccountBook(driver)
+        amount_paid = totalAmountPaid(driver)
+        detail = getDetails(driver)
+
+        while(True):
+            print("Welcome " + detail[0])
+            print("This is Your Data")
+            print("Email: " + detail[1])
+            print("Study Program: " + detail[2])
+            print("Semester Program: " + detail[3])
+            print("1. View Your Subjects")
+            print("2. Account Book")
+            print("3. Amount Paid")
+            print("4. Logout")
+            userChoice = int(input("What do you want to do: "))
+
+            system("cls")
+
+            if userChoice == 1:
+                print("\nSubject List\n==========")
+                for subject in subjects:
+                    print(subject)
+            elif userChoice == 2:
+                print("Account Book")
+                print("You have to pay " + fee_due)
+            elif userChoice == 3:
+                print("You Paid " + str(amount_paid) + " in total till now")
+            elif userChoice == 4:
+                logout(driver)
+                break
+            #calculateQuiz(driver)
+            #logout(driver)
+            system("pause")
+            system("cls")
+        sys.exit("You may close the window")
+    else:
+        sys.exit("Wrong Password")
+if __name__ == "__main__":
+    main()
