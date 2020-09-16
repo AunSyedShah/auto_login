@@ -67,7 +67,7 @@ def login(username, password, driver):
     except:
         return False
 # returns a string
-def getDetails(driver):
+def getStudDetail(driver):
     details = []
     driver.switch_to.default_content()
     driver.switch_to.frame(driver.find_element_by_name("header"))
@@ -148,7 +148,7 @@ def main():
         subjects = getSubjects(driver)
         fee_due = AccountBook(driver)
         amount_paid = totalAmountPaid(driver)
-        detail = getDetails(driver)
+        detail = getStudDetail(driver)
 
         while(True):
             print("Welcome " + detail[0])
