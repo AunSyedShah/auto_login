@@ -73,8 +73,8 @@ def getStudDetail(driver):
     driver.switch_to.frame(driver.find_element_by_name("header"))
     driver.find_element_by_id("imgProfile").click()
     driver.switch_to.default_content()
-    #list append
     driver.switch_to.frame(driver.find_element_by_name("frmContents"))
+    #list append
     details.append(str(driver.find_element_by_id("lblStdName").get_attribute("innerHTML")))
     details.append(str(driver.find_element_by_id("lblVuEmail").get_attribute("innerHTML")))
     details.append(str(driver.find_element_by_id("lblStudyPro").get_attribute("innerHTML")))
@@ -82,10 +82,11 @@ def getStudDetail(driver):
     return details
 def calculateQuiz(driver):
     driver.switch_to.default_content()
+    driver.switch_to.frame(driver.find_element_by_name("header"))
+    driver.find_element_by_id("imgLMSHome").click()
+    driver.switch_to.default_content()
     driver.switch_to.frame(driver.find_element_by_name("frmContents"))
     driver.find_element_by_id("gvCourseList_ibtnQuizzes_1_0").click()
-    print("First Subject Quiz Grand Total")
-
     obtMarks = []
     obtMarksStr = "gvQuizList_lblGetMarks_"
     obtMarksString = ""
@@ -98,8 +99,30 @@ def calculateQuiz(driver):
             count += 1
         except:
             break
-    print(sum(obtMarks))
-def AccountBook(driver):
+    return sum(obtMarks)
+def calculateAssignment(driver):
+    driver.switch_to.default_content()
+    driver.switch_to.frame(driver.find_element_by_name("header"))
+    driver.find_element_by_id("imgLMSHome").click()
+    driver.switch_to.default_content()
+    driver.switch_to.frame(driver.find_element_by_name("frmContents"))
+    driver.find_element_by_id("gvCourseList_ibtnAssignments_1_0").click()
+    driver.switch_to.default_content()
+    driver.switch_to.frame(driver.find_element_by_name("frmContents"))
+    driver.find_element_by_id("TopBar_1_lnkAssignments").click()
+    obtMarks = 0
+    count = 0
+    findAssignment = ""
+    while(True):
+        try:
+            driver.switch_to.frame(driver.find_element_by_name("ifrmAssignmentsArea"))
+            findAssignment = int(driver.find_element_by_id("gvStdAssign_lblScore_" + str(count)).get_attribute("innerHTML"))
+            obtMarks += findAssignment
+            count += 1
+        except:
+            break
+    return obtMarks
+def getTotalPayable(driver):
     driver.switch_to.default_content()
     driver.switch_to.frame(driver.find_element_by_name("header"))
     driver.find_element_by_id("imgAccountBook").click()
@@ -110,6 +133,7 @@ def AccountBook(driver):
 def getQuizPercentage(driver):
     driver.switch_to.default_content()
     driver.switch_to.frame(driver.find_element_by_name("frmContents"))
+    print((calculateQuiz(driver) / 50) * 20)
 # returns integer value
 def totalAmountPaid(driver):
     driver.switch_to.default_content()
@@ -138,7 +162,7 @@ def main():
 
     print("System is Working, Please Wait\n")
     # function calls
-    driver = loadDriver()
+    driver = loadDriver(0)
     driver.get(url)
 
     system("cls")
@@ -146,9 +170,10 @@ def main():
     login_status = login(username, password, driver)
     if login_status:
         subjects = getSubjects(driver)
-        fee_due = AccountBook(driver)
+        fee_due = getTotalPayable(driver)
         amount_paid = totalAmountPaid(driver)
         detail = getStudDetail(driver)
+        assgn = calculateAssignment(driver)
 
         while(True):
             print("Welcome " + detail[0])
@@ -160,6 +185,7 @@ def main():
             print("2. Account Book")
             print("3. Amount Paid")
             print("4. Logout")
+            print("Assignment Total {0}".format(assgn))
             userChoice = int(input("What do you want to do: "))
 
             system("cls")
