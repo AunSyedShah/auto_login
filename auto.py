@@ -104,24 +104,44 @@ def calculateAssignment(driver):
     driver.switch_to.default_content()
     driver.switch_to.frame(driver.find_element_by_name("header"))
     driver.find_element_by_id("imgLMSHome").click()
-    driver.switch_to.default_content()
     driver.switch_to.frame(driver.find_element_by_name("frmContents"))
     driver.find_element_by_id("gvCourseList_ibtnAssignments_1_0").click()
     driver.switch_to.default_content()
     driver.switch_to.frame(driver.find_element_by_name("frmContents"))
-    driver.find_element_by_id("TopBar_1_lnkAssignments").click()
+    driver.switch_to.frame(driver.find_element_by_id("ifrmAssignmentsArea"))
     obtMarks = 0
     count = 0
-    findAssignment = ""
     while(True):
         try:
-            driver.switch_to.frame(driver.find_element_by_name("ifrmAssignmentsArea"))
-            findAssignment = int(driver.find_element_by_id("gvStdAssign_lblScore_" + str(count)).get_attribute("innerHTML"))
+            driver.switch_to.frame(driver.find_element_by_id("ifrmAssignmentsArea"))
+            #driver.switch_to.frame(driver.find_element_by_name("ifrmAssignmentsArea"))
+            findAssignment = float(driver.find_element_by_id("gvStdAssign_lblScore_" + str(count)).get_attribute("innerHTML"))
             obtMarks += findAssignment
             count += 1
         except:
             break
     return obtMarks
+def calculateGDB(driver):
+    driver.switch_to.default_content()
+    driver.switch_to.frame(driver.find_element_by_name("header"))
+    driver.find_element_by_id("imgLMSHome").click()
+    driver.switch_to.default_content()
+    driver.switch_to.frame(driver.find_element_by_name("frmContents"))
+    driver.find_element_by_id("gvCourseList_ibtnGDB_1_0").click()
+    obtMarks = []
+    obtMarksStr = "grdGDBs_lblMarksObtained_"
+    obtMarksString = ""
+    count = 0
+    while(True):
+        obtMarksString = obtMarksStr + str(count)
+        try:
+            findQuiz = driver.find_element_by_id(obtMarksString).get_attribute("innerHTML")
+            obtMarks.append(float(findQuiz))
+            count += 1
+        except:
+            break
+    return sum(obtMarks)
+
 def getTotalPayable(driver):
     driver.switch_to.default_content()
     driver.switch_to.frame(driver.find_element_by_name("header"))
@@ -173,7 +193,7 @@ def main():
         fee_due = getTotalPayable(driver)
         amount_paid = totalAmountPaid(driver)
         detail = getStudDetail(driver)
-        assgn = calculateAssignment(driver)
+        assgn = calculateGDB(driver)
 
         while(True):
             print("Welcome " + detail[0])
@@ -185,7 +205,7 @@ def main():
             print("2. Account Book")
             print("3. Amount Paid")
             print("4. Logout")
-            print("Assignment Total {0}".format(assgn))
+            print("GDB Total {0}".format(assgn))
             userChoice = int(input("What do you want to do: "))
 
             system("cls")
