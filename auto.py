@@ -7,7 +7,8 @@ import time
 
 def loadDriver(state = 1):
     option = webdriver.ChromeOptions()
-    option.add_argument('headless')
+    #option.add_argument('headless')
+    option.add_argument('--no-sandbox')
 
     #driver = webdriver.Chrome("C:\\WebDriver\\bin\\chromedriver.exe")
     try:
@@ -17,7 +18,11 @@ def loadDriver(state = 1):
             driver = webdriver.Chrome("C:\\WebDriver\\chromedriver.exe")
         return driver
     except:
-        sys.exit("You don't have chrome Installed")
+        try:
+            driver = webdriver.Chrome(executable_path="/usr/bin/chromedriver", chrome_options=option)
+            return driver
+        except:
+            sys.exit("You don't have chrome Installed")
 def getSubjects(driver):
     driver.switch_to.default_content()
     driver.switch_to.frame(driver.find_element_by_name("header"))
@@ -61,8 +66,6 @@ def login(username, password, driver):
     try:
         driver.switch_to.default_content()
         driver.switch_to.frame(driver.find_element_by_name("header"))
-        system("cls")
-        print("\nLogin Successful")
         return True
     except:
         return False
@@ -172,20 +175,16 @@ def totalAmountPaid(driver):
     return sum
 def main():
     # local variables
-    system("cls")
     print("Console based VULMS\n==========")
     username = input("Enter Student ID: ")
     password = getpass("Enter your password: ")
     url = "https://vulms.vu.edu.pk/LMS_LandingPage.aspx"
 
-    system("cls")
-
-    print("System is Working, Please Wait\n")
     # function calls
-    driver = loadDriver(0)
+    driver = loadDriver()
     driver.get(url)
 
-    system("cls")
+    # after successful login
 
     login_status = login(username, password, driver)
     if login_status:
@@ -208,8 +207,6 @@ def main():
             print("GDB Total {0}".format(assgn))
             userChoice = int(input("What do you want to do: "))
 
-            system("cls")
-
             if userChoice == 1:
                 print("\nSubject List\n==========")
                 for subject in subjects:
@@ -224,9 +221,6 @@ def main():
                 break
             #calculateQuiz(driver)
             #logout(driver)
-            system("pause")
-            system("cls")
-        sys.exit("You may close the window")
     else:
         sys.exit("Wrong Password")
 if __name__ == "__main__":
